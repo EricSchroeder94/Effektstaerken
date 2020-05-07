@@ -1,0 +1,713 @@
+library(lavaan)
+library(semPlot)
+library(OpenMx)
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(GGally)
+library(ggplot2)
+library(lavaanPlot)
+packages <- c("tidyverse", "knitr", "kableExtra", "lavaan", "semPlot", "OpenMx", "GGally")
+display <- c("Package","Title", "Maintainer", "Version", "URL")
+table <- matrix(NA, 1, NROW(display), dimnames = list(1, display))
+for(i in 1:NROW(packages)){
+  list <- packageDescription(packages[i])
+  table <- rbind(table, matrix(unlist(list[c(display)]), 1, NROW(display), byrow = T))
+}
+table[,NROW(display)] <- stringr::str_extract(table[,NROW(display)], ".+,")
+
+
+
+CKA<- as.data.frame(CKA3)
+CKA[is.na(CKA)] <- 0
+
+
+##### Stress auf Länge + Blattmasse + Stängelmasse (Alle Linien) #####
+
+
+langundBlatt <- data.frame(Nummer = as.numeric(CKA$Line_number),
+                           Name = as.character(CKA$Line_name),
+                           Termin = as.numeric(CKA$IDENT),
+                           Behandlung = as.numeric(CKA$Behandlung),
+                           Stängelmasse = as.numeric(CKA$`Weight Steam_ende`),
+                           Blattmasse = as.numeric(CKA$`Weight Leaves_ende`),
+                           Lang = as.numeric(CKA$Plant_height_ende)
+                           
+)
+
+##### Werte der control gruppe und Stress Gruppe ###
+Teildatensatz_langundBlatt <- subset(langundBlatt, Termin == 1)
+
+
+model <-'
+Lang + Blattmasse + Stängelmasse ~ Behandlung
+'
+fit <- sem(model, data = Teildatensatz_langundBlatt)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### Einfluss von Stress auf die einzelnen Sorten  ##### 
+#### Daten der Stress und control Gruppe wurden verwendet
+
+Teildatensatz_langundBlatt <- subset(langundBlatt, Termin == 1)
+
+##### Datensatz Linien ####
+
+LOST <- subset(Teildatensatz_langundBlatt, Name == "LOST")
+Beaufort_Tastery <- subset(Teildatensatz_langundBlatt, Name == "Beaufort_Tastery")
+BIL_6325 <- subset(Teildatensatz_langundBlatt, Name == "BIL_6325")
+Pollena <- subset(Teildatensatz_langundBlatt, Name == "Pollena")
+Ramallet_TOMRES_296 <- subset(Teildatensatz_langundBlatt, Name == "Ramallet_TOMRES_296")
+Ramallet_TOMRES_323 <- subset(Teildatensatz_langundBlatt, Name == "Ramallet_TOMRES_323")
+GiaGiu <- subset(Teildatensatz_langundBlatt, Name == "GiaGiu")
+Palamos <- subset(Teildatensatz_langundBlatt, Name == "Palamos")
+BIL_6335 <- subset(Teildatensatz_langundBlatt, Name == "BIL_6335")
+Agroilla_1 <- subset(Teildatensatz_langundBlatt, Name == "Agroilla_1")
+Tastery <- subset(Teildatensatz_langundBlatt, Name == "Tastery")
+Lyterno <- subset(Teildatensatz_langundBlatt, Name == "Lyterno")
+TOMRES_Tastery <- subset(Teildatensatz_langundBlatt, Name == "TOMRES_Tastery")
+
+Emperador_Tastery <- subset(Teildatensatz_langundBlatt, Name == "Emperador_Tastery") # unterschiedliche Länge
+Tastery_Tastery <- subset(Teildatensatz_langundBlatt, Name == "Tastery_Tastery") # unterschiedliche Länge
+LOST_Tastery <- subset(Teildatensatz_langundBlatt, Name == "LOST_Tastery") # unterschiedliche Länge
+TOMRES_Rootstock <- subset(Teildatensatz_langundBlatt, Name == "TOMRES_Rootstock") # unterschiedliche Länge
+
+
+##### Das Modell #####
+
+model <-'
+Lang + Blattmasse + Stängelmasse ~ Behandlung
+'
+
+
+
+##### LOST #####
+
+fit <- sem(model, data = LOST)
+semPaths(fit, 'std', layout = 'circle')
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### Beaufort_Tastery #####
+
+fit <- sem(model, data = Beaufort_Tastery)
+semPaths(fit, 'std', layout = 'circle')
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### BIL_6325 #####
+
+fit <- sem(model, data = BIL_6325)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### Pollena ##### 
+#??????
+
+fit <- sem(model, data = Pollena)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### Ramallet_TOMRES_296 #####
+
+fit <- sem(model, data = Ramallet_TOMRES_296)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### Ramallet_TOMRES_323 #####
+
+fit <- sem(model, data = Ramallet_TOMRES_323)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### GiaGiu #####
+
+fit <- sem(model, data = GiaGiu)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### Palamos #####
+
+fit <- sem(model, data = Palamos)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### BIL_6335 ##### 
+#?????
+
+fit <- sem(model, data = BIL_6335)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### Agroilla_1 #####
+
+fit <- sem(model, data = Agroilla_1)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### Tastery #####
+
+fit <- sem(model, data = Tastery)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### Lyterno #####
+fit <- sem(model, data = Lyterno)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### TOMRES_Tastery #####
+fit <- sem(model, data = TOMRES_Tastery)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+
+
+Gewicht_Anzahl <- data.frame(Nummer = as.numeric(CKA$Line_number),
+                              Name = as.character(CKA$Line_name),
+                              Termin = as.numeric(CKA$IDENT),
+                              Behandlung = as.character(CKA$Behandlung),
+                             Anzahl_Gesund = as.numeric(CKA$Healthy_no_sum),
+                             Gewicht_GEsund = as.numeric(CKA$Healthy_weight_sum),
+                             Anzahl_Krank = as.numeric(CKA$Bad_no_sum),
+                             Gewicht_Krank = as.numeric(CKA$Bad_weight_sum),
+                              Verhaeltnis_Gewicht = as.numeric(CKA$`Verhätnis gut/schlecht Gewicht`),
+                              Verhaeltnis_Anzahl = as.numeric(CKA$`Verhätnis gut/schlecht Anzahl`),
+                             Anzahl_Gesamt = as.numeric(CKA$`Anzahl gesamt`)
+)
+
+                          
+
+##### Werte der control gruppe und Stress Gruppe ###
+Teildatensatz_Gewicht_Anzahl <- subset(Gewicht_Anzahl, Termin == 1)
+
+
+
+model <-'
+ Anzahl_Gesund + Gewicht_GEsund + Anzahl_Krank +  ~ Behandlung
+'
+
+
+
+
+
+
+model <-'
+
+ Verhaeltnis_Anzahl ~ Behandlung
+'
+
+
+
+
+
+fit <- sem(model, data = Teildatensatz_Gewicht_Anzahl)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+
+
+
+
+##### Einfluss von Stress auf die einzelnen Sorten  ##### 
+#### Daten der Stress und control Gruppe wurden verwendet 
+
+Teildatensatz_Gewicht_Anzahl <- subset(Gewicht_Anzahl, Termin == 1)
+
+##### Datensatz Linien ####
+
+LOST <- subset(Teildatensatz_Gewicht_Anzahl, Name == "LOST")
+BIL_6325 <- subset(Teildatensatz_Gewicht_Anzahl, Name == "BIL_6325")
+Pollena <- subset(Teildatensatz_Gewicht_Anzahl, Name == "Pollena")
+Ramallet_TOMRES_296 <- subset(Teildatensatz_Gewicht_Anzahl, Name == "Ramallet_TOMRES_296")
+Ramallet_TOMRES_323 <- subset(Teildatensatz_Gewicht_Anzahl, Name == "Ramallet_TOMRES_323")
+GiaGiu <- subset(Teildatensatz_Gewicht_Anzahl, Name == "GiaGiu")
+Palamos <- subset(Teildatensatz_Gewicht_Anzahl, Name == "Palamos")
+BIL_6335 <- subset(Teildatensatz_Gewicht_Anzahl, Name == "BIL_6335")
+Agroilla_1 <- subset(Teildatensatz_Gewicht_Anzahl, Name == "Agroilla_1")
+Lyterno <- subset(Teildatensatz_Gewicht_Anzahl, Name == "Lyterno")
+
+Tastery <- subset(Teildatensatz_Gewicht_Anzahl, Name == "Tastery")
+TOMRES_Tastery <- subset(Teildatensatz_Gewicht_Anzahl, Name == "TOMRES_Tastery")
+Beaufort_Tastery <- subset(Teildatensatz_Gewicht_Anzahl, Name == "Beaufort_Tastery")
+
+
+Emperador_Tastery <- subset(Teildatensatz_Gewicht_Anzahl, Name == "Emperador_Tastery") # unterschiedliche LÃ¤nge
+Tastery_Tastery <- subset(Teildatensatz_Gewicht_Anzahl, Name == "Tastery_Tastery") # unterschiedliche LÃ¤nge
+LOST_Tastery <- subset(Teildatensatz_Gewicht_Anzahl, Name == "LOST_Tastery") # unterschiedliche LÃ¤nge
+TOMRES_Rootstock <- subset(Teildatensatz_Gewicht_Anzahl, Name == "TOMRES_Rootstock") # unterschiedliche LÃ¤nge
+
+
+##### Das Modell #####
+
+model <-'
+Anzahl_Gesund + Gewicht_GEsund +Anzahl_Krank  ~ Behandlung
+'
+
+model <-'
+
+Verhaeltnis_Gewicht + Verhaeltnis_Anzahl ~ Behandlung
+'
+
+
+##### LOST #####
+
+fit <- sem(model, data = LOST)
+semPaths(fit, 'std', layout = 'circle')
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+
+##### Beaufort_Tastery #####
+
+fit <- sem(model, data = Beaufort_Tastery)
+semPaths(fit, 'std', layout = 'circle')
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### BIL_6325 #####
+
+fit <- sem(model, data = BIL_6325)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### Pollena ##### 
+
+fit <- sem(model, data = Pollena)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### Ramallet_TOMRES_296 #####
+
+fit <- sem(model, data = Ramallet_TOMRES_296)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### Ramallet_TOMRES_323 #####
+
+fit <- sem(model, data = Ramallet_TOMRES_323)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### GiaGiu #####
+
+fit <- sem(model, data = GiaGiu)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### Palamos #####
+
+fit <- sem(model, data = Palamos)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### BIL_6335 ##### 
+
+
+fit <- sem(model, data = BIL_6335)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### Agroilla_1 #####
+
+fit <- sem(model, data = Agroilla_1)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### Tastery #####
+
+fit <- sem(model, data = Tastery)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### Lyterno #####
+fit <- sem(model, data = Lyterno)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### TOMRES_Tastery #####
+fit <- sem(model, data = TOMRES_Tastery)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+
+##### Berechnung mit gemittelten Dualex-Werten #####
+
+
+Dualex_alles  <- data.frame( Nummer = as.numeric(CKA$Plant_number),
+                         Gruppe = as.numeric(CKA$IDENT),
+                         Name = as.character(CKA$Line_name),
+                         Behandlung = as.numeric(CKA$Behandlung),
+                         CHL = as.numeric(CKA$mean_Chl),
+                         Flav = as.numeric(CKA$mean_Flav)
+)    
+
+Teildatensatz_Dualex_alles <- subset(Dualex_alles, Gruppe == 1)
+
+
+
+
+##### Stress auf Dualex alle 3 Messtermine (nach dem Stress ausgelÃ¶st wurde)######
+###### Wirkung Stress auf CHL, Flav 
+
+
+model <-'
+CHL + Flav ~ Behandlung
+'
+
+fit <- sem(model, data = Teildatensatz_Dualex_alles)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+
+##### Stressefekt auf CHL + Flav  bei einzelnen Sorten nachdem Stress ausgelÃ¶st wurde#####
+
+##### Datensatz Linien ####
+
+LOST <- subset(Teildatensatz_Dualex_alles, Name == "LOST")
+Beaufort_Tastery <- subset(Teildatensatz_Dualex_alles, Name == "Beaufort_Tastery")
+BIL_6325 <- subset(Teildatensatz_Dualex_alles, Name == "BIL_6325")
+Pollena <- subset(Teildatensatz_Dualex_alles, Name == "Pollena")
+Ramallet_TOMRES_296 <- subset(Teildatensatz_Dualex_alles, Name == "Ramallet_TOMRES_296")
+Ramallet_TOMRES_323 <- subset(Teildatensatz_Dualex_alles, Name == "Ramallet_TOMRES_323")
+GiaGiu <- subset(Teildatensatz_Dualex_alles, Name == "GiaGiu")
+Palamos <- subset(Teildatensatz_Dualex_alles, Name == "Palamos")
+BIL_6335 <- subset(Teildatensatz_Dualex_alles, Name == "BIL_6335")
+Agroilla_1 <- subset(Teildatensatz_Dualex_alles, Name == "Agroilla_1")
+Tastery <- subset(Teildatensatz_Dualex_alles, Name == "Tastery")
+Lyterno <- subset(Teildatensatz_Dualex_alles, Name == "Lyterno")
+TOMRES_Tastery <- subset(Teildatensatz_Dualex_alles, Name == "TOMRES_Tastery")
+
+Emperador_Tastery <- subset(Teildatensatz_Dualex_alles, Name == "Emperador_Tastery") # unterschiedliche LÃÂ¤nge
+Tastery_Tastery <- subset(Teildatensatz_Dualex_alles, Name == "Tastery_Tastery") # unterschiedliche LÃÂ¤nge
+LOST_Tastery <- subset(Teildatensatz_Dualex_alles, Name == "LOST_Tastery") # unterschiedliche LÃÂ¤nge
+TOMRES_Rootstock <- subset(Teildatensatz_Dualex_alles, Name == "TOMRES_Rootstock") # unterschiedliche LÃÂ¤nge
+
+##### Das Modell #####
+
+model <-'
+CHL + Flav  ~ Behandlung
+'
+
+model <-'
+CHL ~ Behandlung
+'
+
+model <-'
+Flav ~ Behandlung
+'
+
+
+##### LOST #####
+
+fit <- sem(model, data = LOST)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### Beaufort_Tastery #####
+
+fit <- sem(model, data = Beaufort_Tastery)
+semPaths(fit, 'std', layout = 'circle')
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### BIL_6325 #####
+
+fit <- sem(model, data = BIL_6325)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### Pollena ##### 
+
+
+fit <- sem(model, data = Pollena)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### Ramallet_TOMRES_296 #####
+
+fit <- sem(model, data = Ramallet_TOMRES_296)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### Ramallet_TOMRES_323 #####
+
+fit <- sem(model, data = Ramallet_TOMRES_323)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### GiaGiu #####
+
+fit <- sem(model, data = GiaGiu)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### Palamos #####
+
+fit <- sem(model, data = Palamos)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### BIL_6335 ##### 
+
+
+fit <- sem(model, data = BIL_6335)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### Agroilla_1 #####
+
+fit <- sem(model, data = Agroilla_1)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### Tastery #####
+
+fit <- sem(model, data = Tastery)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### Lyterno #####
+fit <- sem(model, data = Lyterno)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### TOMRES_Tastery #####
+fit <- sem(model, data = TOMRES_Tastery)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+
+
+
+##### Berechnung mit gemittelten Fieldspec-Werten #####
+
+
+
+
+
+
+##### Stress auf NDVI und ARI nachdem stress ausgelöst wurde ######
+
+FIeldspec_nach_Stress <- data.frame( Nummer = as.numeric(CKA$Plant_number),
+                         Gruppe = as.numeric(CKA$IDENT),
+                         Name = as.character(CKA$Line_name),
+                         Behandlung = as.numeric(CKA$Behandlung),
+                         Gewicht_Gesund = as.numeric(CKA$Healthy_weight_sum),
+                         Blattmasse = as.numeric(CKA$`Weight Leaves_ende`),
+                         ARI = as.numeric(CKA$mean_ARI_Stressausgelöst),
+                         NDVI = as.numeric(CKA$mean_NDVI_Stressausgelöst)
+)    
+
+Teildatensatz_Fieldspec_nach_Stress <- subset(FIeldspec_nach_Stress, Gruppe == 1)
+
+
+
+
+
+
+
+##### Wirkung Stress auf ARi + NDVI ##
+model <-'
+ARI + NDVI ~ Behandlung
+'
+fit <- sem(model, data = Teildatensatz_Fieldspec_nach_Stress)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+
+
+
+Teildatensatz_Sorten_summiert
+
+model <-'
+ARI + NDVI ~ Behandlung
+'
+fit <- sem(model, data = Teildatensatz_Sorten_summiert)
+semPaths(fit, 'std', layout = 'circle')
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+
+
+
+
+
+##### Stressefekt auf NDVI + ARI bei einzelnen Sorten nachdem Stress ausgelöst wurde#####
+
+##### Datensatz Linien ####
+
+LOST <- subset(Teildatensatz_Fieldspec_nach_Stress, Name == "LOST")
+Beaufort_Tastery <- subset(Teildatensatz_Fieldspec_nach_Stress, Name == "Beaufort_Tastery")
+BIL_6325 <- subset(Teildatensatz_Fieldspec_nach_Stress, Name == "BIL_6325")
+Pollena <- subset(Teildatensatz_Fieldspec_nach_Stress, Name == "Pollena")
+Ramallet_TOMRES_296 <- subset(Teildatensatz_Fieldspec_nach_Stress, Name == "Ramallet_TOMRES_296")
+Ramallet_TOMRES_323 <- subset(Teildatensatz_Fieldspec_nach_Stress, Name == "Ramallet_TOMRES_323")
+GiaGiu <- subset(Teildatensatz_Fieldspec_nach_Stress, Name == "GiaGiu")
+Palamos <- subset(Teildatensatz_Fieldspec_nach_Stress, Name == "Palamos")
+BIL_6335 <- subset(Teildatensatz_Fieldspec_nach_Stress, Name == "BIL_6335")
+Agroilla_1 <- subset(Teildatensatz_Fieldspec_nach_Stress, Name == "Agroilla_1")
+Tastery <- subset(Teildatensatz_Fieldspec_nach_Stress, Name == "Tastery")
+Lyterno <- subset(Teildatensatz_Fieldspec_nach_Stress, Name == "Lyterno")
+TOMRES_Tastery <- subset(Teildatensatz_Fieldspec_nach_Stress, Name == "TOMRES_Tastery")
+
+Emperador_Tastery <- subset(Teildatensatz_Fieldspec_nach_Stress, Name == "Emperador_Tastery") # unterschiedliche LÃ¤nge
+Tastery_Tastery <- subset(Teildatensatz_Fieldspec_nach_Stress, Name == "Tastery_Tastery") # unterschiedliche LÃ¤nge
+LOST_Tastery <- subset(Teildatensatz_Fieldspec_nach_Stress, Name == "LOST_Tastery") # unterschiedliche LÃ¤nge
+TOMRES_Rootstock <- subset(Teildatensatz_Fieldspec_nach_Stress, Name == "TOMRES_Rootstock") # unterschiedliche LÃ¤nge
+
+
+
+
+##### Das Modell #####
+
+model <-'
+ARI + NDVI ~ Behandlung
+'
+
+
+##### LOST #####
+
+fit <- sem(model, data = LOST)
+semPaths(fit, 'std', layout = 'circle')
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### Beaufort_Tastery #####
+
+fit <- sem(model, data = Beaufort_Tastery)
+semPaths(fit, 'std', layout = 'circle')
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### BIL_6325 #####
+
+fit <- sem(model, data = BIL_6325)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### Pollena ##### 
+
+
+fit <- sem(model, data = Pollena)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### Ramallet_TOMRES_296 #####
+
+fit <- sem(model, data = Ramallet_TOMRES_296)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### Ramallet_TOMRES_323 #####
+
+fit <- sem(model, data = Ramallet_TOMRES_323)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### GiaGiu #####
+
+fit <- sem(model, data = GiaGiu)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### Palamos #####
+
+fit <- sem(model, data = Palamos)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### BIL_6335 ##### 
+
+
+fit <- sem(model, data = BIL_6335)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### Agroilla_1 #####
+
+fit <- sem(model, data = Agroilla_1)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+##### Tastery #####
+
+fit <- sem(model, data = Tastery)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### Lyterno #####
+fit <- sem(model, data = Lyterno)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+##### TOMRES_Tastery #####
+fit <- sem(model, data = TOMRES_Tastery)
+semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
+
+
+
+
+
+
+
+
+
+
+
+
+

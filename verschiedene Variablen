@@ -107,7 +107,7 @@ summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
 
 
 ##### Pollena ##### 
-#??????
+
 
 fit <- sem(model, data = Pollena)
 semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
@@ -143,7 +143,7 @@ summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
 
 
 ##### BIL_6335 ##### 
-#?????
+
 
 fit <- sem(model, data = BIL_6335)
 semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
@@ -181,13 +181,13 @@ Gewicht_Anzahl <- data.frame(Nummer = as.numeric(CKA$Line_number),
                               Name = as.character(CKA$Line_name),
                               Termin = as.numeric(CKA$IDENT),
                               Behandlung = as.character(CKA$Behandlung),
-                             Anzahl_Gesund = as.numeric(CKA$Healthy_no_sum),
-                             Gewicht_GEsund = as.numeric(CKA$Healthy_weight_sum),
-                             Anzahl_Krank = as.numeric(CKA$Bad_no_sum),
-                             Gewicht_Krank = as.numeric(CKA$Bad_weight_sum),
+                              Anzahl_Gesund = as.numeric(CKA$Healthy_no_sum),
+                              Gewicht_GEsund = as.numeric(CKA$Healthy_weight_sum),
+                              Anzahl_Krank = as.numeric(CKA$Bad_no_sum),
+                              Gewicht_Krank = as.numeric(CKA$Bad_weight_sum),
                               Verhaeltnis_Gewicht = as.numeric(CKA$`Verhätnis gut/schlecht Gewicht`),
                               Verhaeltnis_Anzahl = as.numeric(CKA$`Verhätnis gut/schlecht Anzahl`),
-                             Anzahl_Gesamt = as.numeric(CKA$`Anzahl gesamt`)
+                              Anzahl_Gesamt = as.numeric(CKA$`Anzahl gesamt`)
 )
 
                           
@@ -699,6 +699,80 @@ fit <- sem(model, data = TOMRES_Tastery)
 semPaths(fit,"std",layout = 'tree', edge.label.cex=.9, curvePivot = TRUE)
 summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
 
+
+
+###### Beispiel zur Berechnung des Effektes bei einem Linienwechsel
+###### Der Effekt auf das Gewicht der marktfähigen Tomaten bei einem Wechsel von Lyterno, hin zu einer von den 12 weitern Linien 
+
+sorteneffekt_1 <- c(0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1)
+
+
+Lyterno__Lost <- c(Lyterno_control$Gewicht,     LOST_control$Gewicht)
+
+Lyterno__BIL_6325 <- c(Lyterno_control$Gewicht,     BIL_6325_control$Gewicht)
+
+Lyterno__Pollena <- c(Lyterno_control$Gewicht,     Pollena_control$Gewicht)
+
+Lyterno__Ramallet_TOMRES_296 <- c(Lyterno_control$Gewicht,     Ramallet_TOMRES_296_control$Gewicht)
+
+Lyterno__Ramallet_TOMRES_323<- c(Lyterno_control$Gewicht,     Ramallet_TOMRES_323_control$Gewicht)
+
+Lyterno__GiaGiu<- c(Lyterno_control$Gewicht,     GiaGiu_control$Gewicht)
+
+Lyterno__Palamos<- c(Lyterno_control$Gewicht,     Palamos_control$Gewicht)
+
+Lyterno__BIL_6335<- c(Lyterno_control$Gewicht,     BIL_6335_control$Gewicht)
+
+Lyterno__Agroilla_1<- c(Lyterno_control$Gewicht,     Agroilla_1_control$Gewicht)
+
+Lyterno__Lyterno<- c(Lyterno_control$Gewicht,    Lyterno_control$Gewicht)
+
+
+
+
+
+Lyterno__Tastery <- c(Lyterno_control$Gewicht,     Tastery_control$Gewicht)
+
+Lyterno__TOMRES_Tastery <- c(Lyterno_control$Gewicht,     TOMRES_Tastery_control$Gewicht)
+
+Lyterno__Beaufort_Tastery <- c(Lyterno_control$Gewicht,     Beaufort_Tastery_control$Gewicht)
+
+
+
+Genetik_Gewicht_Lyterno <- data.frame(Genetik = as.numeric(sorteneffekt_1),
+                                     
+                                     Lost = as.numeric(Lyterno__Lost), 
+                                     BIL_6325 = as.numeric(Lyterno__BIL_6325),
+                                     Pollena = as.numeric(Lyterno__Pollena),
+                                     Ramallet_TOMRES_296 = as.numeric(Lyterno__Ramallet_TOMRES_296),
+                                     Ramallet_TOMRES_323 = as.numeric(Lyterno__Ramallet_TOMRES_323),
+                                     GiaGiu = as.numeric(Lyterno__GiaGiu),
+                                     Palamos = as.numeric(Lyterno__Palamos),
+                                     BIL_6335 = as.numeric(Lyterno__BIL_6335),
+                                     Agroilla_1 = as.numeric(Lyterno__Agroilla_1),
+                                     Lyterno = as.numeric(Lyterno__Lyterno),
+                                     
+                                     Tastery = as.numeric(Lyterno__Tastery),
+                                     TOMRES_Tastery = as.numeric(Lyterno__TOMRES_Tastery),
+                                     Beaufort_Tastery = as.numeric(Lyterno__Beaufort_Tastery)
+                                     
+)
+
+
+
+
+model <-'
+Lost + Palamos + BIL_6325 + Pollena +Ramallet_TOMRES_296 + Ramallet_TOMRES_323 + GiaGiu    ~ Genetik
+'
+
+model <-'
+Lyterno + BIL_6335 +  Agroilla_1  + TOMRES_Tastery + Beaufort_Tastery + Tastery ~ Genetik
+'
+
+
+fit <- sem(model, data = Genetik_Gewicht_Lyterno)
+lavaanPlot(model = fit, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, stand = TRUE)
+summary(fit, fit.measures = TRUE, standardized=T,rsquare=T)
 
 
 
